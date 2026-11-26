@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        services: ${{ needs.validating-changes.outputs.services }}
+        services: ${{ fromJSON(needs.validating-changes.outputs.services) }}
 
     steps:
       - name: checkout
