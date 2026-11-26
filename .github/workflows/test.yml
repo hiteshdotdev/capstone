@@ -29,9 +29,14 @@ jobs:
           cache-dependency-path: ${{ matrix.services }}/go.sum
 
       - if: ${{ matrix.services == 'services/python/load-generator-python' }}
+        uses: Gr1N/setup-poetry@48b0f77c8c1b1b19cb962f0f00dff7b4be8f81ec
+        with:
+          poetry-version: "2.5.1"
+
+      - if: ${{ matrix.services == 'services/python/load-generator-python' }}
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
-          python-version-file: ${{ matrix.services }}/.python-version
+          python-version-file: ${{ matrix.services }}/pyproject.toml
           cache: poetry
           cache-dependency-path: ${{ matrix.services }}/poetry.lock
       
