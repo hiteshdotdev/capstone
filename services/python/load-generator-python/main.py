@@ -33,7 +33,7 @@ if __name__ == "__main__":
     delay_ms = float(os.getenv('DELAY_MS', 1000))  # Default delay to 1000 milliseconds if not set
 
     if not api_url:
-        logging.error("Error: API_URL env variable is not set.")
+        logging.error("Error: API_URL environment variable is not set.")
         sys.exit(1)
 
     # Set up signal handler
