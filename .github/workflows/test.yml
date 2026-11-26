@@ -23,11 +23,10 @@ jobs:
           cache-dependency-path: "services/node/api-node/package-lock.json"
       
       - if: ${{ matrix.services == 'services/go/api-golang' }}
-        uses: supplypike/setup-bin@8e3f88b4f143d9b5c3497f0fc12d45c83c123787 #v4
+        uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
-          uri: "https://github.com/go-task/task/releases/download/v3.54.0/task_linux_amd64.tar.gz"
-          name: "task"
-          version: 3.54.0
+          go-version-file: "services/go/api-golang/go.mod"
+          cache-dependency-path: "services/go/api-golang/go.sum"
 
       - uses: supplypike/setup-bin@8e3f88b4f143d9b5c3497f0fc12d45c83c123787 #v4
         with:
@@ -70,10 +69,10 @@ jobs:
   #   runs-on: ubuntu-22.04
   #   steps:
   #     - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v4
-  #     - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
-  #       with:
-  #         go-version-file: "services/go/api-golang/go.mod"
-  #         cache-dependency-path: "services/go/api-golang/go.sum"
+      # - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
+      #   with:
+      #     go-version-file: "services/go/api-golang/go.mod"
+      #     cache-dependency-path: "services/go/api-golang/go.sum"
 
   #     - uses: supplypike/setup-bin@8e3f88b4f143d9b5c3497f0fc12d45c83c123787 #v4
   #       with:
