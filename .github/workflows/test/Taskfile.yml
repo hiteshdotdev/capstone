@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  test:
+    desc: Trigger GitHub Actions workflows using act
+    cmds:
+      - |
+        act workflow_dispatch \
+          --container-architecture linux/amd64 \
+          -P ubuntu-22.04=nektos/act-environments-ubuntu:18.04 \
+          --directory ../../../ \
+          -W .github/workflows/test.yml
