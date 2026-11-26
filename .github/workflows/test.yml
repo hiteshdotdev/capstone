@@ -4,6 +4,26 @@ on:
   workflow_dispatch: 
 
 jobs:
+  validating-changes:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: collecting service changes
+        uses: dorny/paths-filter@v4
+        id: changes
+        with:
+          filters: |
+            node:
+              - 'services/node/**'
+            go:
+              - 'services/go/**'
+            client-react:
+              - 'services/react/**'
+            python: 
+              - services/python/**
+      
+      - name: printing collected file paths
+        run: echo ${{ steps.changes.outputs }}
+
   setup-test:
     runs-on: ubuntu-22.04
     strategy:
@@ -13,44 +33,51 @@ jobs:
 
 
     steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v4
+      - name: checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v4
 
-      - if: ${{ matrix.services == 'services/node/api-node' || matrix.services == 'services/react/client-react' }}
+      - name: setting up node
+        if: ${{ matrix.services == 'services/node/api-node' || matrix.services == 'services/react/client-react' }}
         uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
           node-version-file: ${{ matrix.services }}/.nvmrc
           cache: "npm"
           cache-dependency-path: ${{ matrix.services }}/package-lock.json
       
-      - if: ${{ matrix.services == 'services/go/api-golang' }}
+      - name: setting up go
+        if: ${{ matrix.services == 'services/go/api-golang' }}
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
           go-version-file: ${{ matrix.services }}/go.mod
           cache-dependency-path: ${{ matrix.services }}/go.sum
 
-      - if: ${{ matrix.services == 'services/python/load-generator-python' }}
+      - name: setting up poetry
+        if: ${{ matrix.services == 'services/python/load-generator-python' }}
         uses: Gr1N/setup-poetry@48b0f77c8c1b1b19cb962f0f00dff7b4be8f81ec
         with:
           poetry-version: "2.5.1"
 
-      - if: ${{ matrix.services == 'services/python/load-generator-python' }}
+      - name: setting up python
+        if: ${{ matrix.services == 'services/python/load-generator-python' }}
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version-file: ${{ matrix.services }}/pyproject.toml
           cache: poetry
           cache-dependency-path: ${{ matrix.services }}/poetry.lock
       
-
-      - uses: supplypike/setup-bin@8e3f88b4f143d9b5c3497f0fc12d45c83c123787 #v4
+      - name: installing taskfile
+        uses: supplypike/setup-bin@8e3f88b4f143d9b5c3497f0fc12d45c83c123787 #v4
         with:
           uri: "https://github.com/go-task/task/releases/download/v3.54.0/task_linux_amd64.tar.gz"
           name: "task"
           version: 3.54.0
 
-      - run: task install-ci
+      - name: installing dependencies
+        run: task install-ci
         working-directory: ${{ matrix.services }}
 
-      - run: task test
+      - name: running test cases
+        run: task test
         working-directory: ${{ matrix.services }}
 
 
