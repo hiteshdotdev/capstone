@@ -15,17 +15,18 @@ jobs:
         id: changes
         with:
           filters: |
-            node:
+            services/node/api-node:
               - 'services/node/**'
-            go:
+            services/go/api-golang:
               - 'services/go/**'
-            client-react:
+            services/react/client-react:
               - 'services/react/**'
-            python: 
+            services/python/load-generator-python: 
               - services/python/**
       
       - name: printing collected file paths
         run: echo '${{ steps.changes.outputs.changes }}'
+        
 
   setup-test:
     runs-on: ubuntu-22.04
