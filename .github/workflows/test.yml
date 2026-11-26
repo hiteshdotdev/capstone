@@ -2,10 +2,15 @@ name: Testing Microservices
 
 on:
   workflow_dispatch: 
+  push: 
+    branches: 
+      - main
 
 jobs:
   validating-changes:
     runs-on: ubuntu-22.04
+    outputs:
+      services: ${{ steps.changes.outputs.changes }}
     steps:
       - name: checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v4
@@ -23,18 +28,15 @@ jobs:
               - 'services/react/**'
             services/python/load-generator-python: 
               - services/python/**
-      
-      - name: printing collected file paths
-        run: echo '${{ steps.changes.outputs.changes }}'
-        
+
 
   setup-test:
     runs-on: ubuntu-22.04
+    needs: validating-changes
     strategy:
       fail-fast: false
       matrix:
-        services: [ "services/node/api-node", "services/react/client-react", "services/go/api-golang", "services/python/load-generator-python" ]
-
+        services: ${{ needs.validating-changes.outputs.services }}
 
     steps:
       - name: checkout
