@@ -9,24 +9,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        services: [ "services/node/api-node", "services/go/api-golang" ]
+        services: [ "services/node/api-node", "services/react/client-react", "services/go/api-golang" ]
 
 
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v4
 
-      - if: ${{ matrix.services == 'services/node/api-node' }}
+      - if: ${{ matrix.services == 'services/node/api-node' || matrix.services == 'services/react/client-react' }}
         uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4.0.4
         with:
-          node-version-file: "services/node/api-node/.nvmrc"
+          node-version-file: ${{ matrix.services }}/.nvmrc
           cache: "npm"
-          cache-dependency-path: "services/node/api-node/package-lock.json"
+          cache-dependency-path: ${{ matrix.services }}/package-lock.json
       
       - if: ${{ matrix.services == 'services/go/api-golang' }}
         uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5.6.0
         with:
-          go-version-file: "services/go/api-golang/go.mod"
-          cache-dependency-path: "services/go/api-golang/go.sum"
+          go-version-file: ${{ matrix.services }}/go.mod
+          cache-dependency-path: ${{ matrix.services }}/go.sum
 
       - uses: supplypike/setup-bin@8e3f88b4f143d9b5c3497f0fc12d45c83c123787 #v4
         with:
